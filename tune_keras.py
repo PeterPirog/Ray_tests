@@ -8,13 +8,13 @@ def train_mnist(config):
     print('Is cuda available:', tf.test.is_gpu_available())
     batch_size = 128
     num_classes = 10
-    epochs = 12
+    epochs = 200
 
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
     x_train, x_test = x_train / 255.0, x_test / 255.0
     model = tf.keras.models.Sequential([
         tf.keras.layers.Flatten(input_shape=(28, 28)),
-        tf.keras.layers.Dense(config["hidden"], activation="relu"),
+        tf.keras.layers.Dense(config["hidden"], activation=config["activation"]),
         tf.keras.layers.Dropout(config["dropout"]),
         tf.keras.layers.Dense(num_classes, activation="softmax")
     ])
@@ -39,7 +39,7 @@ def train_mnist(config):
 if __name__ == "__main__":
     import ray
     from ray import tune
-    from ray.tune.schedulers import AsyncHyperBandScheduler
+    from ray.tune.schedulers import AsyncHyperBandScheduler, ASHAScheduler
     import tensorflow as tf
 
     print('Is cuda available external:', tf.test.is_gpu_available())
@@ -47,8 +47,8 @@ if __name__ == "__main__":
     mnist.load_data()  # we do this on the driver because it's not threadsafe
 
     ray.init(num_cpus=8, num_gpus=1)
-    sched = AsyncHyperBandScheduler(
-        time_attr="training_iteration", max_t=400, grace_period=20)
+    #sched = AsyncHyperBandScheduler(time_attr="training_iteration", max_t=400, grace_period=20)
+    sched = ASHAScheduler(time_attr="training_iteration", max_t=100, grace_period=10)
 
     analysis = tune.run(
         train_mnist,
@@ -60,16 +60,17 @@ if __name__ == "__main__":
             "mean_accuracy": 0.99,
             "training_iteration": 300
         },
-        num_samples=10,
+        num_samples=30, #10
         local_dir='./ray_results',
         resources_per_trial={
-            "cpu": 1,
-            "gpu": 0
+            "cpu": 8,
+            "gpu": 1
         },
         config={
-            "threads": 2,
+            #"threads": 2,
             "lr": tune.uniform(0.001, 0.1),
             "hidden": tune.randint(32, 512),
-            "dropout": tune.uniform(0.01, 0.2)
+            "dropout": tune.uniform(0.01, 0.2),
+            "activation": tune.choice(["relu","elu"])
         })
     print("Best hyperparameters found were: ", analysis.best_config)
