@@ -61,9 +61,10 @@ if __name__ == "__main__":
             "training_iteration": 300
         },
         num_samples=10,
+        local_dir='./ray_results',
         resources_per_trial={
-            "cpu": 8,
-            "gpu": 1
+            "cpu": 1,
+            "gpu": 0
         },
         config={
             "threads": 2,
