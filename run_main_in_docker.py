@@ -8,7 +8,9 @@ script_name='tune_keras.py'
 
 #docker_cmd=f"sudo docker run -v `pwd`:`pwd` -w `pwd` --gpus all -it --rm {container_id} python '{script_name}'"
 
-docker_cmd=f"s sudo docker run -v `pwd`:`pwd` -w `pwd` --gpus all -it --rm peterpirogtf/ray_tf2:latest python 'tune_keras.py'"
+#docker_cmd=f"s sudo docker run -v `pwd`:`pwd` -w `pwd` --gpus all -it --rm peterpirogtf/ray_tf2:latest python 'tune_keras.py'"
+#docker_cmd=f"sudo docker run -v `pwd`:`pwd` -w `pwd` --gpus all -it --rm peterpirogtf/ray_tf2:latest python '03_tune_keras_functional_cnn.py'"
+docker_cmd=f"sudo docker run -v `pwd`:`pwd` -w `pwd` --gpus all -it --rm peterpirogtf/ray_tf2:latest python 'simple_mnist_cnn.py'"
 os.system(docker_cmd)
 
 

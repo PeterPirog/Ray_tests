@@ -12,13 +12,17 @@ def train_mnist(config):
 
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
     x_train, x_test = x_train / 255.0, x_test / 255.0
-    model = tf.keras.models.Sequential([
-        tf.keras.layers.Flatten(input_shape=(28, 28)),
-        tf.keras.layers.Dense(config["hidden"], activation=config["activation"]),
-        tf.keras.layers.Dropout(config["dropout"]),
-        tf.keras.layers.Dense(num_classes, activation="softmax")
-    ])
 
+    #define model
+    inputs=tf.keras.layers.Input(shape=(28, 28))
+    x=tf.keras.layers.Flatten()(inputs)
+    #x=tf.keras.layers.LayerNormalization()(x)
+    for i in range(config["layers"]):
+        x=tf.keras.layers.Dense(units=config["hidden"], activation=config["activation"])(x)
+        x=tf.keras.layers.Dropout(config["dropout"])(x)
+    outputs=tf.keras.layers.Dense(units=num_classes, activation="softmax")(x)
+
+    model=tf.keras.Model(inputs=inputs,outputs=outputs,name="mnist_model")
     model.compile(
         loss="sparse_categorical_crossentropy",
         optimizer=tf.keras.optimizers.Adam(lr=config["lr"]),
@@ -39,7 +43,7 @@ def train_mnist(config):
 if __name__ == "__main__":
     import ray
     from ray import tune
-    from ray.tune.schedulers import AsyncHyperBandScheduler, ASHAScheduler
+    from ray.tune.schedulers import ASHAScheduler
     import tensorflow as tf
 
     print('Is cuda available external:', tf.test.is_gpu_available())
@@ -60,7 +64,7 @@ if __name__ == "__main__":
             "mean_accuracy": 0.99,
             "training_iteration": 300
         },
-        num_samples=30, #10
+        num_samples=50, #10
         local_dir='./ray_results',
         resources_per_trial={
             "cpu": 8,
@@ -72,6 +76,6 @@ if __name__ == "__main__":
             "hidden": tune.randint(32, 512),
             "dropout": tune.uniform(0.01, 0.2),
             "activation": tune.choice(["relu","elu"]),
-            "layers": tune.randint(1, 3)
+            "layers": tune.choice([1,2,3])
         })
     print("Best hyperparameters found were: ", analysis.best_config)
