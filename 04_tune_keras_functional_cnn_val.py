@@ -22,21 +22,31 @@ def train_mnist(config):
     inputs=tf.keras.layers.Input(shape=(28,28,1))  #changed size shape=(28, 28)
     x=tf.keras.layers.BatchNormalization()(inputs)
     #1st conv layer
-    x=tf.keras.layers.Conv2D(filters=config["c1_f"],kernel_size=config["c1_ks"],activation=config["act_f1"])(x)
+    x=tf.keras.layers.Conv2D(filters=config["c1_f"],
+                             kernel_size=config["c1_ks"],
+                             kernel_initializer=config["init"],
+                             activation=config["act_f1"])(x)
     x=tf.keras.layers.MaxPool2D((2,2))(x)
     x = tf.keras.layers.BatchNormalization()(x)
 
     #2nd conv layer
-    x=tf.keras.layers.Conv2D(filters=config["c2_f"],kernel_size=config["c2_ks"],activation=config["act_f1"])(x)
+    x=tf.keras.layers.Conv2D(filters=config["c2_f"],
+                             kernel_size=config["c2_ks"],
+                             kernel_initializer=config["init"],
+                             activation=config["act_f1"])(x)
     x=tf.keras.layers.MaxPool2D((2,2))(x)
     x = tf.keras.layers.BatchNormalization()(x)
 
     x=tf.keras.layers.Flatten()(x)
-    x=tf.keras.layers.Dense(units=config["hidden"], activation=config["act_f2"])(x)
+    x=tf.keras.layers.Dense(units=config["hidden"],
+                            kernel_initializer=config["init"],
+                            activation=config["act_f2"])(x)
     x=tf.keras.layers.Dropout(config["drop"])(x)
     x = tf.keras.layers.BatchNormalization()(x)
 
-    outputs=tf.keras.layers.Dense(units=num_classes, activation="softmax")(x)
+    outputs=tf.keras.layers.Dense(units=num_classes,
+                                  kernel_initializer=config["init"],
+                                  activation="softmax")(x)
 
     model=tf.keras.Model(inputs=inputs,outputs=outputs,name="mnist_conv_model")
     model.compile(
@@ -77,10 +87,10 @@ if __name__ == "__main__":
         metric="mean_accuracy",
         mode="max",
         stop={
-            "mean_accuracy": 0.995,
+            "mean_accuracy": 0.99,
             "training_iteration": 300
         },
-        num_samples=100, #10
+        num_samples=20, #10
         local_dir='./ray_results',
         resources_per_trial={
             "cpu": 8,
@@ -92,8 +102,9 @@ if __name__ == "__main__":
             "lr": tune.uniform(0.0001, 0.1),
             "hidden": tune.randint(32, 512),
             "drop": tune.uniform(0.01, 0.2),
-            "act_f1": tune.choice(["relu","elu"]),
-            "act_f2": tune.choice(["relu", "elu"]),
+            "act_f1": tune.choice(["selu"]),
+            "act_f2": tune.choice(["selu"]),
+            "init": tune.choice(["lecun_normal"]),
             'c1_f':tune.choice([16,32,64]),
             'c2_f':tune.choice([16,32,64]),
             'c1_ks':tune.choice([3,4]),
