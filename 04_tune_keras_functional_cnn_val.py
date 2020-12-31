@@ -1,6 +1,8 @@
-
+import ray
 from tensorflow.keras.datasets import mnist
 from ray.tune.integration.keras import TuneReportCallback
+
+#ray.init(address='192.168.1.16:6379', _redis_password='5241590000000000')
 
 def train_mnist(config):
     # https://github.com/tensorflow/tensorflow/issues/32159
