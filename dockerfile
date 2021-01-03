@@ -11,11 +11,14 @@ RUN python3 -m pip install --upgrade setuptools
 #RUN pip install torch===1.7.0+cu110 torchvision===0.8.1+cu110 torchaudio===0.7.0 -f https://download.pytorch.org/whl/torch_stable.html
 RUN pip install scikit-learn
 
-RUN pip install ray
+
 RUN pip install modin
-RUN pip install "ray[tune]"
-RUN pip install "ray[rllib]"
-RUN pip install "ray[serve]"
+RUN pip install ray[all]
+#RUN pip install "ray[tune]"
+#RUN pip install "ray[rllib]"
+#RUN pip install "ray[serve]"
+
+RUN pip install -U ray
 RUN pip install argparse
 
 
