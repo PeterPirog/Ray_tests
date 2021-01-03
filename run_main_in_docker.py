@@ -19,3 +19,5 @@ os.system(docker_cmd)
 # add nosie for observations
 #monit number of steps before fail
 # sudo docker run -v `pwd`:`pwd` -w `pwd` --gpus all -it --rm peterpirogtf/ray_tf2:latest python 'tune_keras.py'
+
+# sudo docker run -p 6379:6379 --gpus all -it --rm peterpirogtf/ray_tf2:latest ray start --head --num-cpus=8 --num-gpus=1
