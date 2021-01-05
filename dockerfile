@@ -21,6 +21,7 @@ RUN pip install argparse
 #libraries for gym
 
 RUN pip install gym[atari]
+RUN pip install box2d
 RUN pip install gym[box2d]
 
 #RUN ray start --head
@@ -39,3 +40,6 @@ CMD ["sh"]
 #https://stackoverflow.com/questions/41984399/denied-requested-access-to-the-resource-is-denied-docker
 
 #https://github.com/ray-project/ray/blob/master/doc/source/rllib-training.rst
+
+# sudo docker run --cpus 8 --gpus all -it -p 8265:8265 --rm peterpirogtf/ray_tf2 rllib train --run=TD3 --env=BipedalWalker-v3
+# sudo docker run --cpus 8 --gpus all -it -p 8265:8265 --rm peterpirogtf/ray_tf2 rllib train --run=TD3 --env=BipedalWalkerHardcore-v3
