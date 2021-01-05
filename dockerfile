@@ -18,17 +18,14 @@ RUN ray install-nightly
 
 RUN pip install -U ray
 RUN pip install argparse
-RUN pip install -U gym[box2d]
+#libraries for gym
 
+RUN pip install gym[atari]
+RUN pip install gym[box2d]
 
 #RUN ray start --head
 # Container start command
 CMD ["sh"]
-
-
-
-#CMD ["ray start --head"]
-
 
 
 #command to build new image:
@@ -40,3 +37,5 @@ CMD ["sh"]
 # docker login
 # docker push peterpirogtf/ray_tf2:latest
 #https://stackoverflow.com/questions/41984399/denied-requested-access-to-the-resource-is-denied-docker
+
+#https://github.com/ray-project/ray/blob/master/doc/source/rllib-training.rst

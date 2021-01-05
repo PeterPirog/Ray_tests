@@ -2,7 +2,8 @@ import ray
 from tensorflow.keras.datasets import mnist
 from ray.tune.integration.keras import TuneReportCallback
 #ray.shutdown()
-ray.init(address='192.168.1.16:6379', _redis_password='5241590000000000')
+#ray.init(address='192.168.1.16:6379', _redis_password='5241590000000000')
+#ray.init(address='auto')
 
 def train_mnist(config):
     # https://github.com/tensorflow/tensorflow/issues/32159
@@ -77,11 +78,11 @@ if __name__ == "__main__":
     print('Is cuda available external:', tf.test.is_gpu_available())
 
     mnist.load_data()  # we do this on the driver because it's not threadsafe
-
-    ray.init(num_cpus=8, num_gpus=1)
+    #ray.init(address='192.168.1.16:6379', _redis_password='5241590000000000')
+    #ray.init(num_cpus=8, num_gpus=1)
     #sched = AsyncHyperBandScheduler(time_attr="training_iteration", max_t=400, grace_period=20)
     sched = ASHAScheduler(time_attr="training_iteration", max_t=100, grace_period=10)
-
+    print('test 1')
     analysis = tune.run(
         train_mnist,
         name="exp",
@@ -95,7 +96,7 @@ if __name__ == "__main__":
         num_samples=20, #10
         local_dir='./ray_results',
         resources_per_trial={
-            "cpu": 8,
+            "cpu": 1,
             "gpu": 0
         },
         config={
