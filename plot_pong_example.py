@@ -215,7 +215,8 @@ def zero_grads(grad_buffer):
 # We define an **actor**, which is responsible for taking a model and an env
 # and performing a rollout + computing a gradient update.
 
-ray.init()
+ray.init(include_dashboard=True,
+         dashboard_host='0.0.0.0')
 
 
 @ray.remote

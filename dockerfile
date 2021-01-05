@@ -14,12 +14,11 @@ RUN pip install scikit-learn
 
 RUN pip install modin
 RUN pip install ray[all]
-#RUN pip install "ray[tune]"
-#RUN pip install "ray[rllib]"
-#RUN pip install "ray[serve]"
+RUN ray install-nightly
 
 RUN pip install -U ray
 RUN pip install argparse
+RUN pip install -U gym[box2d]
 
 
 #RUN ray start --head
