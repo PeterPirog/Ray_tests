@@ -6,7 +6,7 @@ FROM  tensorflow/tensorflow:latest-gpu-py3
 RUN export python=python3
 RUN apt-get update
 RUN apt-get install -y libgl1-mesa-dev
-#RUN apt-get install ffmpeg
+RUN apt-get install -y rsync
 
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install --upgrade setuptools
@@ -25,7 +25,11 @@ RUN pip install gym[atari]
 RUN pip install box2d
 RUN pip install gym[box2d]
 
-#RUN ray start --head
+#https://medium.com/@ratulbasak93/ffmpeg-latest-in-docker-or-ubuntu-16-04-4bd7ea750ca1
+######################################################################################################################
+################################################# INSTALLING FFMPEG ##################################################
+RUN apt install -y ffmpeg
+
 # Container start command
 CMD ["sh"]
 
