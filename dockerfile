@@ -4,9 +4,10 @@ FROM  tensorflow/tensorflow:latest-gpu-py3
 
 #Download and install dependencies
 RUN export python=python3
-RUN apt-get update
+RUN apt-get update -y
 RUN apt-get install -y libgl1-mesa-dev
 RUN apt-get install -y rsync
+RUN apt-get install -y apt-utils
 
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install --upgrade setuptools
@@ -19,16 +20,13 @@ RUN pip install -U ray[all]
 RUN ray install-nightly
 
 RUN pip install argparse
-#libraries for gym
+#libraries for gymdocker system prune
+
 
 RUN pip install gym[atari]
 RUN pip install box2d
 RUN pip install gym[box2d]
 
-#https://medium.com/@ratulbasak93/ffmpeg-latest-in-docker-or-ubuntu-16-04-4bd7ea750ca1
-######################################################################################################################
-################################################# INSTALLING FFMPEG ##################################################
-RUN apt install -y ffmpeg
 
 # Container start command
 CMD ["sh"]
