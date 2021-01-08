@@ -32,17 +32,26 @@ ray.init(num_cpus=8,
          dashboard_host='0.0.0.0')
 
 
-sched = ASHAScheduler(time_attr="training_iteration", max_t=100, grace_period=10)
+#sched = ASHAScheduler(time_attr="training_iteration",max_t=5,grace_period=3)
 
+asha_scheduler = ASHAScheduler(
+    time_attr='training_iteration',
+    metric='episode_reward_mean',
+    mode='max',
+    max_t=5,
+    grace_period=2,
+    reduction_factor=3,
+    brackets=1)
 
 tune.run(
     "PPO",
     keep_checkpoints_num=3,
     checkpoint_freq=3,
-    scheduler=sched,
-    mode="max",
+    checkpoint_at_end=True,
+    scheduler=asha_scheduler,
+   #mode="max",
     reuse_actors=True,
-    stop={"episode_reward_mean": 195},
+    stop={"episode_reward_mean": 200},
     config={
         "env": "CartPole-v0",
         "num_gpus": 1,   # number GPU for single trainer
@@ -51,3 +60,7 @@ tune.run(
         "framework":"tf2",
     },
 )
+
+
+
+#rllib train --run=PG --env=CartPole-v0 --restore=$HOME/ray_results/default/PG_CartPole-v0_0_2019-04-05_16-43-02s_gcpmkl/checkpoint_9/checkpoint-9

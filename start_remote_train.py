@@ -10,7 +10,7 @@ local_result_dir='/home/peterpirog/PycharmProjects/Ray_tests/ray_results/'
 docker_result_dir='/root/ray_results/'
 
 docker_cmd=f'sudo docker run -p 8265:8265 -p 6379:6379 -v `pwd`:`pwd` -v {local_result_dir}:{docker_result_dir} -w `pwd` --gpus all  --cpus 8 -it --rm --shm-size=16g peterpirogtf/ray_tf2:latest'
-rllib_cmd='python3 rllib_test.py'
+rllib_cmd='python3 run_agent.py'  #rllib_test.py
 
 cmd=docker_cmd + ' ' + rllib_cmd
 
