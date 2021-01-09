@@ -4,15 +4,16 @@ from ray import tune
 import ray.rllib.agents.ppo as ppo
 from ray.tune.schedulers import ASHAScheduler
 
-# checkpoint_path='/home/peterpirog/PycharmProjects/Ray_tests/ray_results/PPO/PPO_CartPole-v0_f82cf_00002_2_lr=0.0001_2021-01-07_15-48-11/checkpoint_5'
-
+import tensorflow as tf
+print(f'\n Is cuda available: {tf.test.is_gpu_available()} \n')
 
 #### STEP 1 - CONFIGURE CLUSTER HEAD
 # DOCS IN LINK: https://docs.ray.io/en/master/package-ref.html
-ray.init(num_cpus=8,
-         num_gpus=1,
-         include_dashboard=True,
+ray.init(num_cpus=8, ##if you use docker use docker run --cpus 8
+         num_gpus=1, #if you use docker use docker run --gpus all
+         include_dashboard=True, #if you use docker use docker run -p 8265:8265 -p 6379:6379
          dashboard_host='0.0.0.0')
+        # if you use docker  remember about allocate memory use docker run --shm-size=16g (it means allocate for docker 16 GB of physical memory)
 
 #### STEP 3 - CONFIGURE TUNE SCHEDULER
 # DOCS IN LINK: https://docs.ray.io/en/master/tune/api_docs/schedulers.html?highlight=ASHAScheduler#asha-tune-schedulers-ashascheduler
@@ -21,33 +22,19 @@ asha_scheduler = ASHAScheduler(
     time_attr='training_iteration',  # use number of iterations as limiter
     metric='episode_reward_mean',  # parameter to optimize
     # mode='max',                     #find maximum, do notdefine here if you define in tune.run
-    max_t=50,  # maximum number of iterations -  stop trainng after max_t iterations
+    max_t=500,  # maximum number of iterations -  stop trainng after max_t iterations
     grace_period=3,  # stop after grace_period iterations without result improvement
     reduction_factor=3,
     brackets=1)
-"""
 
-#Available agents (training algorithms): https://docs.ray.io/en/master/rllib-algorithms.html
-config_agent={
-        "env": "CartPole-v0",   #name of environment from gym library, it can be defined by user, example:
-        "num_gpus": 0,
-        "num_workers": 2, #every trainer has theese number of workers
-        #"lr": tune.grid_search([0.01, 0.001, 0.0001]),
-        "framework":"tf2",  #configuration to use tensorflow 2 as a main framework
-    }
-
-agent = ppo.PPOTrainer(env="CartPole-v0",config=config_agent)#
-
-"""
 #### STEP 2 - CONFIGURE TRAINER CONFIG DICTIONARY
 # DOCS IN LINK: https://docs.ray.io/en/master/rllib-training.html#evaluating-trained-policies
 # DOCS ABOUT SEARCHING OPTIONS HERE: https://docs.ray.io/en/master/tune/api_docs/search_space.html
 config = {
     "env": "CartPole-v0",  # name of environment from gym library, it can be defined by user, example:
-    "num_gpus": 0,
-    "num_workers": 2,  # every trainer has theese number of workers
-    # "lr": tune.grid_search([0.01, 0.001, 0.0001]),
-    "lr": tune.uniform(0.0001, 0.01),
+    "num_gpus": 1, #number of GPUs for trainer, remember even with GPU trainer needs 1 CPU
+    "num_workers": 7,  #  number of workers for one trainer
+    "lr": tune.grid_search([0.01, 0.001, 0.0001]), # or "lr": tune.uniform(0.0001, 0.01)
     "framework": "tf2",  # configuration to use tensorflow 2 as a main framework
 }
 #### STEP 3 - CONFIGURE RAY TUNE
@@ -59,14 +46,16 @@ analysis = tune.run(
     keep_checkpoints_num=3,
     checkpoint_freq=3,
     checkpoint_at_end=True,
-    stop={"episode_reward_mean": 100},  # stop training if this value is reached
+    stop={"episode_reward_mean": 200},  # stop training if this value is reached
     mode='max',  # find maximum vale as a target
     reuse_actors=True,
-    num_samples=10,  # number of trial simulation value important if you have mane combinations of values
-    # local_dir='./ray_results',  #directory to store results, be careful if you use docker containers
+    num_samples=20,  # number of trial simulation value important if you have mane combinations of values
+    # local_dir='~/ray_results',  #directory to store results,  if you use docker containers this directory must be mounted docker run -v
     config=config,
+    verbose=3, #0 = silent, 1 = only status updates, 2 = status and brief trial results, 3 = status and detailed trial results. Defaults to 3
 )
 
+#### STEP 3 - FIND PATH TO CHECKPOINTS
 checkpoints = analysis.get_trial_checkpoints_paths(
     trial=analysis.get_best_trial("episode_reward_mean"),
     metric="episode_reward_mean")
@@ -81,6 +70,8 @@ config = {
     "num_workers": 1,
     "framework": "tf2",
 }
+
+
 agent = ppo.PPOTrainer(config=config, env="CartPole-v0")
 agent.restore(checkpoint_path)
 
