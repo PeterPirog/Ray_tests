@@ -27,6 +27,8 @@ RUN pip install gym[atari]
 RUN pip install box2d
 RUN pip install gym[box2d]
 
+#RUN TENSORBOARD SERVER
+#RUN tensorboard --logdir=/root/ray_results --bind_all
 
 # Container start command
 CMD ["sh"]

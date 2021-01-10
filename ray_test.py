@@ -21,12 +21,13 @@ print(ray.global_state.cluster_resources())
 
 import ray
 import time
-ray.init(address='192.168.1.16:6379', _redis_password='5241590000000000')
-#ray.init(address='auto')
+#ray.init(address='192.168.1.16:6379', _redis_password='5241590000000000')
+ray.init()
 @ray.remote
 def f(i):
     time.sleep(1)
     return i
+
 futures = [print(ray.get(f.remote(i))) for i in range(200)]
 #print(ray.get(futures))
 #print(ray.global_state.cluster_resources())
