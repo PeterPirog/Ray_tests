@@ -34,9 +34,9 @@ config = {
     "env": "BipedalWalkerHardcore-v3",  # name of environment from gym library, it can be defined by user, example: CartPole-v0
     "num_gpus": 1, #number of GPUs for trainer, remember even with GPU trainer needs 1 CPU
     "num_workers": 7,  #  number of workers for one trainer
-    "lr": tune.grid_search([1e-5]), # or "lr": tune.uniform(0.0001, 0.01)
-    "sgd_minibatch_size": tune.grid_search([64]),
-    "batch_mode": tune.grid_search(["truncate_episodes"]),
+    "lr": 1e-5, # or "lr": tune.uniform(0.0001, 0.01)
+    "sgd_minibatch_size": 64,
+    "batch_mode": "truncate_episodes",
     "framework": "tf2",  # configuration to use tensorflow 2 as a main framework
 
 }

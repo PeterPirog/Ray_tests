@@ -11,7 +11,7 @@ docker_result_dir='/root/ray_results/'  #path in docker container
 
 #docker_cmd=f'sudo docker run -p 8265:8265 -p 6379:6379 -v `pwd`:`pwd` -v {local_result_dir}:{docker_result_dir} -w `pwd` --gpus all  --cpus 8 -it --rm --shm-size=16g peterpirogtf/ray_tf2:latest'
 docker_cmd=f'sudo docker run -p 8265:8265 -p 6379:6379 -p 6006:6006 --expose=10000-10999  -v `pwd`:`pwd` -v {local_result_dir}:{docker_result_dir} -w `pwd` --gpus all  --cpus 8 -it --rm --shm-size=16g peterpirogtf/ray_tf2:latest'
-rllib_cmd='run_PPO_hard_walker.py'  #run_PPO_hard_walker.py python3 run_agent.py
+rllib_cmd='python3 run_PPO_hard_walker.py'  #run_PPO_hard_walker.py python3 run_agent.py
 
 cmd=docker_cmd + ' ' + rllib_cmd
 
