@@ -1,37 +1,37 @@
 #Use existing docker image as a base
-#FROM tensorflow/tensorflow:2.3.1-gpu
 FROM  tensorflow/tensorflow:latest-gpu-py3
+LABEL maintainer="peterpirogtf@gmail.com"
 
 #Download and install dependencies
 RUN export python=python3
 RUN apt-get update -y
-RUN apt-get install -y libgl1-mesa-dev
-RUN apt-get install -y rsync
-RUN apt-get install -y apt-utils
+RUN apt-get install --no-install-recommends -y libgl1-mesa-dev
+RUN apt-get install --no-install-recommends -y rsync
+RUN apt-get install --no-install-recommends -y apt-utils
+RUN apt-get autoremove -y
 
+#Upgrade pip and setuptools
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install --upgrade setuptools
 #RUN pip install torch===1.7.0+cu110 torchvision===0.8.1+cu110 torchaudio===0.7.0 -f https://download.pytorch.org/whl/torch_stable.html
-RUN pip install scikit-learn
 
+
+RUN pip install gym[atari]
+RUN pip install box2d
+RUN pip install gym[box2d]
+RUN pip install scikit-learn
 
 RUN pip install modin
 RUN pip install -U ray[all]
 RUN ray install-nightly
 
 RUN pip install argparse
-#libraries for gymdocker system prune
-
-
-RUN pip install gym[atari]
-RUN pip install box2d
-RUN pip install gym[box2d]
 
 #RUN TENSORBOARD SERVER
 #RUN tensorboard --logdir=/root/ray_results --bind_all
 
 # Container start command
-CMD ["sh"]
+CMD ["/bin/bash"]
 
 
 #command to build new image:
@@ -48,6 +48,14 @@ CMD ["sh"]
 
 # sudo docker run --cpus 8 --gpus all -it -p 8265:8265 --rm peterpirogtf/ray_tf2 rllib train --run=TD3 --env=BipedalWalker-v3
 # sudo docker run --cpus 8 --gpus all -it -p 8265:8265 --rm peterpirogtf/ray_tf2 rllib train --run=TD3 --env=BipedalWalkerHardcore-v3
+
+# sudo docker run  --cpus 8 --gpus all -it -p 8265:8265 --rm peterpirogtf/ray_tf2 rllib train --run=TD3 --env=BipedalWalkerHardcore-v3  --ray-num-gpus 1 --eager
+
+#sudo docker run -v `pwd`:`pwd` -w `pwd` -it -p 8265:8265 --rm peterpirogtf/ray_tf2 rllib train --run=PPO --env=CartPole-v0 --checkpoint-freq 3
+
+#sudo docker run -v `./`:`pwd` -w `pwd` -it -p 8265:8265 --rm peterpirogtf/ray_tf2 rllib train --run=PPO --env=CartPole-v0 --checkpoint-freq 3 --eager
+
+#sudo docker run -v ~/PycharmProjects/Ray_tests:`pwd` -w `pwd` -it -p 8265:8265 --rm peterpirogtf/ray_tf2 rllib train --run=PPO --env=CartPole-v0 --checkpoint-freq 3 --eager --export-formats model
 
 #rllib train --env=PongDeterministic-v4 --run=A2C --config '{"num_workers": 2, "monitor": true}'
 #rllib train --run DQN --env CartPole-v0 --eager --config '{"num_workers": 2, "monitor": true, "num_gpus" : 1}'
