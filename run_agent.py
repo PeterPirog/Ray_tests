@@ -20,10 +20,10 @@ ray.init(num_cpus=8, ##if you use docker use docker run --cpus 8
 
 asha_scheduler = ASHAScheduler(
     time_attr='training_iteration',  # use number of iterations as limiter  'time_total_s'
-    metric='episode_reward_mean',  # parameter to optimize
+    metric='episode_len_mean',  # parameter to optimize episode_reward_mean
     # mode='max',                     #find maximum, do notdefine here if you define in tune.run
     max_t=2000,  # maximum number of iterations -  stop trainng after max_t iterations
-    grace_period=3,  # stop after grace_period iterations without result improvement
+    grace_period=5,  # stop after grace_period iterations without result improvement
     reduction_factor=3,
     brackets=1)
 
@@ -31,7 +31,7 @@ asha_scheduler = ASHAScheduler(
 # DOCS IN LINK: https://docs.ray.io/en/master/rllib-training.html#evaluating-trained-policies
 # DOCS ABOUT SEARCHING OPTIONS HERE: https://docs.ray.io/en/master/tune/api_docs/search_space.html
 config = {
-    "env": "BipedalWalkerHardcore-v3",  # name of environment from gym library, it can be defined by user, example: CartPole-v0
+    "env": "CartPole-v0",  # name of environment from gym library, it can be defined by user, example: CartPole-v0
     "num_gpus": 0, #number of GPUs for trainer, remember even with GPU trainer needs 1 CPU
     "num_workers": 1,  #  number of workers for one trainer
     "lr": tune.grid_search([0.01, 0.001, 0.0001,0.00001]), # or "lr": tune.uniform(0.0001, 0.01)
@@ -49,7 +49,7 @@ analysis = tune.run(
     keep_checkpoints_num=3,
     checkpoint_freq=3,
     checkpoint_at_end=True,
-    stop={"episode_reward_mean": 300},  # stop training if this value is reached
+    stop={"episode_reward_mean": 300},  # stop training if this value is reached episode_reward_mean
     mode='max',  # find maximum vale as a target
     reuse_actors=True,
     #num_samples=30,  # number of trial simulation value important if you have mane combinations of values
@@ -75,7 +75,7 @@ config = {
 }
 
 
-agent = ppo.PPOTrainer(config=config, env="BipedalWalkerHardcore-v2")
+agent = ppo.PPOTrainer(config=config, env="CartPole-v0")
 agent.restore(checkpoint_path)
 
 print('agent=', agent)
@@ -84,7 +84,7 @@ print('agent=', agent)
 import gym
 
 # instantiate env class
-env = gym.make("BipedalWalkerHardcore-v2")
+env = gym.make("CartPole-v0")
 
 # run until episode ends
 episode_reward = 0
