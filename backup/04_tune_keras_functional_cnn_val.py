@@ -94,7 +94,7 @@ if __name__ == "__main__":
             "training_iteration": 300
         },
         num_samples=20, #10
-        local_dir='./ray_results',
+        local_dir='../ray_results',
         resources_per_trial={
             "cpu": 1,
             "gpu": 0
