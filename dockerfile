@@ -26,6 +26,8 @@ RUN pip install -U ray[all]
 RUN ray install-nightly
 
 RUN pip install argparse
+#install Gaussian Process Framework
+RUN pip install GPy
 
 #RUN TENSORBOARD SERVER
 #RUN tensorboard --logdir=/root/ray_results --bind_all
