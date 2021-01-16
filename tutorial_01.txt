@@ -1,0 +1,38 @@
+Tutorial 01
+Creating docker container and run python script in it.
+
+1) Create directory: ~/ray_results/
+2) Run docker command:
+
+sudo docker run -d -p 8265:8265 -p 6379:6379 --expose=10000-10999  -v `pwd`:`pwd` -v ~/ray_results/:/root/ray_results/ -w `pwd` --gpus all  --cpus 8 -dit --rm --shm-size=16g --network=host peterpirogtf/ray_tf2:latest
+
+Comment: directory where you run this command is mounted
+
+result:
+WARNING: Published ports are discarded when using host network mode
+9b31c6c47711bdf80b50ebb154e599f154b5ca6bf9ea88af31c26207bdad9e8d
+
+3) Step into docker, command:
+docker attach 9b31c6c47711bdf80b50ebb154e599f154b5ca6bf9ea88af31c26207bdad9e8d
+
+
+
+rllib train --run=PPO --env=CartPole-v0 --ray-num-cpus 8 --checkpoint-freq 5 --keep-checkpoints-num 3 --checkpoint-at-end --stop STOP '{"time_total_s": 600, "training_iteration": 200}'
+
+
+rllib train --run=PPO --env=CartPole-v0 --ray-num-cpus 8 --checkpoint-freq 5 --keep-checkpoints-num 3 --checkpoint-at-end --stop '{"time_total_s": 600, "training_iteration": 200}'
+
+Training example via RLlib CLI:
+    rllib train --run DQN --env CartPole-v0
+
+Grid search example via RLlib CLI:
+    rllib train -f tuned_examples/cartpole-grid-search-example.yaml
+
+Grid search example via executable:
+    ./train.py -f tuned_examples/cartpole-grid-search-example.yaml
+
+Note that -f overrides all other trial-specific command-line options.
+
+
+RUN TENSORBOARD:
+tensorboard --logdir ~/ray_results --bind_all

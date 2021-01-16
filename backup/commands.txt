@@ -7,3 +7,5 @@ WORKER WINDOWS
 
 docker run -p 8265:8265 -p 6379:6379 -p 6006:6006 --expose=10000-10999 --gpus all  --cpus 8 -dit --rm --shm-size=16g --network=host peterpirogtf/ray_tf2:latest
 ray start --address='192.168.1.16:6379' --redis-password='5241590000000000'
+
+
