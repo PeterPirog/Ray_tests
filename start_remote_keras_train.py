@@ -1,11 +1,10 @@
 import os
 
-file='tune_keras_functional.py' #run_PPO_hard_walker.py python3  run_PPO_hard_walker.py run_agent.py
+file= 'tune_keras_functional.py'  #run_PPO_hard_walker.py python3  run_PPO_hard_walker.py run_agent.py tune_keras_functional_pb2.py
 
 
-
-#Set2
-local_result_dir='/home/peterpirog/ray_results/' # path in physical machine /home/peterpirog/PycharmProjects/Ray_tests/ray_results/
+# USE ABSOLUTE PATHS
+local_result_dir="/home/peterpirog/ray_results/" # path in physical machine /home/peterpirog/PycharmProjects/Ray_tests/ray_results/
 docker_result_dir='/root/ray_results/'  #path in docker container
 
 docker_cmd=f'sudo docker run' \
@@ -26,10 +25,6 @@ rllib_cmd=f'python3 {file}'
 
 cmd=docker_cmd + ' ' + rllib_cmd
 
-try:
-    os.system('tensorboard --logdir ~/ray_results --bind_all --port 6006')
-except:
-    pass
 os.system(cmd)
 
 
