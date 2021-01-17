@@ -26,14 +26,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--max", type=int, default=1000000)
     parser.add_argument("--algo", type=str, default="PPO")
-    parser.add_argument("--num_workers", type=int, default=4)
+    parser.add_argument("--num_workers", type=int, default=6)
     parser.add_argument("--num_samples", type=int, default=4)
     parser.add_argument("--t_ready", type=int, default=50000)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument(
         "--horizon", type=int, default=1600)  # make this 1000 for other envs
     parser.add_argument("--perturb", type=float, default=0.25)  # if using PBT
-    parser.add_argument("--env_name", type=str, default="BipedalWalker-v2")
+    parser.add_argument("--env_name", type=str, default="BipedalWalker-v3")
     parser.add_argument(
         "--criteria", type=str,
         default="timesteps_total")  # "training_iteration", "time_total_s"
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # bipedalwalker needs 1600
-    if args.env_name in ["BipedalWalker-v3"]:
+    if args.env_name in ["BipedalWalker-v2", "BipedalWalker-v3"]:
         horizon = 1600
     else:
         horizon = 1000
@@ -97,6 +97,9 @@ if __name__ == "__main__":
         name="{}_{}_{}_seed{}_{}".format(timelog, args.method, args.env_name,
                                          str(args.seed), args.filename),
         scheduler=methods[args.method],
+        keep_checkpoints_num=3,
+        checkpoint_freq=3,
+        checkpoint_at_end=True,
         verbose=1,
         num_samples=args.num_samples,
         stop={args.criteria: args.max},
