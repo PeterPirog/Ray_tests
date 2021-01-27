@@ -1,0 +1,41 @@
+#Use existing docker image as a base
+FROM  rayproject/ray-ml:c5b645-cpu
+LABEL maintainer="peterpirogtf@gmail.com"
+
+#Download and install dependencies
+RUN export python=python3
+RUN export pip=pip3
+
+RUN apt-get update -y
+RUN apt-get upgrade -y
+RUN apt-get autoremove -y
+
+#Upgrade pip and setuptools
+RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install --upgrade setuptools
+
+RUN pip install gym[atari]
+RUN pip install box2d
+RUN pip install gym[box2d]
+RUN pip install scikit-learn
+
+RUN pip install modin
+RUN ray install-nightly
+
+RUN pip install argparse
+
+#install Gaussian Process Framework
+RUN pip install GPy
+
+# Container start command
+CMD ["/bin/bash"]
+
+
+#command to build new image:
+#sudo docker build -t peterpirogtf/ray_tf2:latest .
+#docker buildx build  --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t peterpirogtf/ray_multi_arch:cpu --file ./dockerfile_armv7 .
+#How to push docker image to hub
+
+#login by:
+# docker login
+# docker push peterpirogtf/ray_multi_arch:cpu
