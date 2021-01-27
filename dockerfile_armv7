@@ -4,11 +4,9 @@ LABEL maintainer="peterpirogtf@gmail.com"
 
 #Download and install dependencies
 RUN export python=python3
-RUN export pip=pip3
-
-RUN apt-get update -y
-RUN apt-get upgrade -y
-RUN apt-get autoremove -y
+RUN sudo apt-get update -y
+RUN sudo apt-get upgrade -y
+RUN sudo apt-get autoremove -y
 
 #Upgrade pip and setuptools
 RUN python3 -m pip install --upgrade pip
@@ -33,9 +31,9 @@ CMD ["/bin/bash"]
 
 #command to build new image:
 #sudo docker build -t peterpirogtf/ray_tf2:latest .
-#docker buildx build  --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t peterpirogtf/ray_multi_arch:cpu --file ./dockerfile_armv7 .
+#docker buildx build  --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t peterpirogtf/ray_tf2:cpu-multi_arch --file ./dockerfile_armv7 . --push
 #How to push docker image to hub
 
 #login by:
 # docker login
-# docker push peterpirogtf/ray_multi_arch:cpu
+# docker push peterpirogtf/ray_tf2:cpu-multi_arch

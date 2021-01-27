@@ -33,10 +33,10 @@ CMD ["/bin/bash"]
 
 
 #command to build new image:
-#sudo docker build -t peterpirogtf/ray_tf2:latest .
+#sudo docker build -t peterpirogtf/ray_tf2:gpu .
 
 #How to push docker image to hub
 
 #login by:
 # docker login
-# docker push peterpirogtf/ray_tf2:latest
+# docker push peterpirogtf/ray_tf2:gpu
