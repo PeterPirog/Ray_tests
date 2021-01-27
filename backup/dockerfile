@@ -62,3 +62,9 @@ CMD ["/bin/bash"]
 #rllib train --env=PongDeterministic-v4 --run=A2C --config '{"num_workers": 2, "monitor": true}'
 #rllib train --run DQN --env CartPole-v0 --eager --config '{"num_workers": 2, "monitor": true, "num_gpus" : 1}'
 #rllib train --run=TD3 --env=BipedalWalkerHardcore-v3 --eager --ray-num-gpus 1 --checkpoint-freq 10 --export-formats model
+
+
+#MULTI PLATFORM
+#https://docs.docker.com/buildx/working-with-buildx/
+#HOW TO INSTALL DOCKER ON RASPBERRY: https://phoenixnap.com/kb/docker-on-raspberry-pi
+#docker buildx build  --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t peterpirogtf/ray_tf2:latest .

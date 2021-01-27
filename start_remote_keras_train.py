@@ -1,11 +1,8 @@
 import os
-
-file= 'tune_keras_functional.py'  #run_PPO_hard_walker.py python3  run_PPO_hard_walker.py run_agent.py tune_keras_functional_pb2.py
-
-
+file= 'tune_keras_functional.py'  #  IN THIS PLACE PLACE PATH TO YOUR PY FILE !!!
 # USE ABSOLUTE PATHS
-local_result_dir="/home/peterpirog/ray_results/" # path in physical machine /home/peterpirog/PycharmProjects/Ray_tests/ray_results/
-docker_result_dir='/root/ray_results/'  #path in docker container
+local_result_dir="/home/peterpirog/ray_results/" # PLACE YOUR USER NAME , PATH IN YOUR PHYSICAL MACHINE
+docker_result_dir='/root/ray_results/'  #PATH INSIDE DOCKER CONTAINER
 
 docker_cmd=f'sudo docker run' \
            f' -it --rm' \
@@ -22,9 +19,7 @@ docker_cmd=f'sudo docker run' \
            f' peterpirogtf/ray_tf2:latest'
 
 rllib_cmd=f'python3 {file}'
-
 cmd=docker_cmd + ' ' + rllib_cmd
-
 os.system(cmd)
 
 
@@ -69,5 +64,4 @@ IMPORTANT: You can't use asset in script, if You don't declare it for Your docke
 
 If you want use tensorboard command:
 tensorboard --logdir ~/ray_results --bind_all --port 6006'
-
 """

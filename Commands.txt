@@ -4,8 +4,8 @@ sudo docker run  -d -it --rm --network=host -p 8265:8265 -p 6379:6379 --expose=1
 ray start --head --dashboard-host=0.0.0.0
 
 WORKER WINDOWS 10 PC
-
-docker run -d -it --rm --network=host -p 8265:8265 -p 6379:6379 --expose=10000-10999  -v //G/PycharmRemote/Ray_tests:/root/  -w /root/ --cpus 8 --shm-size=30g  peterpirogtf/ray_tf2:latest
+bind-address = 192.168.1.10 --network host
+docker run -d -it --net="host" -p 8265:8265 -p 6379:6379 --expose=10000-10999 -v //G/PycharmRemote/Ray_tests:/root/ -w /root/ --cpus 8 --shm-size=30g  peterpirogtf/ray_tf2:latest
 ray start --address='192.168.1.16:6379' --redis-password='5241590000000000'
 
 
@@ -26,3 +26,5 @@ ray start --address='192.168.1.16:6379' --redis-password='5241590000000000'
     ray.init(address='auto', _redis_password='5241590000000000')
 
 tensorboard --logdir ~/ray_results --bind_all
+
+rllib train --run=PPO --env=CartPole-v0 --checkpoint-freq 5 --checkpoint-at-end=True --resources-per-trial {"cpu": 1, "gpu": 0}
